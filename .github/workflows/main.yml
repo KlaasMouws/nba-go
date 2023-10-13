@@ -26,3 +26,15 @@ jobs:
         run: |
           mvn clean
           mvn -B package --file pom.xml
+  
+  gen-sbom:
+    name: SBOM creation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: advanced-security/generate-sbom-action@v1
+        id: gensbom
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sbom
+          path: ${{ steps.gensbom.outputs.fileName }}
