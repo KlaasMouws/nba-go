@@ -1,0 +1,33 @@
+name: Continous Integration and Continous Delivery
+
+on:
+  release:
+    types: [published]
+  
+jobs:
+  processing_docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Test
+        # Run your CI script before build docker image  
+        run: make install && \
+             make test && \
+             make coverage && \
+             make cleanup
+      - name: Docker build then push
+        uses: tegarimansyah/docker_build_push@master
+        env:
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}
+            PASSWORD: ${{ secrets.PASSWORD }}
+
+            SEMVER: 0.1.0
+            HOST: HOSTNAME.com
+            ORG: PROJECTNAME
+            APPNAME: APPNAME
+            # if DEV is true then your image tag is as follow
+            # 0.1.0-dev-c7bf9e21
+            # where c7bf9e21 is your 8 char git hash
+            # best for your staging server
+            # else, the tag will be 0.1.0 ($SEMVER)
+            DEV: false
