@@ -1,8 +1,9 @@
 name: Continous Integration and Continous Delivery
 
 on:
-  release:
-    types: [published]
+  push: 
+    branches:
+      - master
   
 jobs:
   processing_docs:
